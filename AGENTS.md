@@ -1,0 +1,2 @@
+- Site content (projects, founders, services, FAQs) lives in src/data/site.ts; sections are in src/components/site/. Why: one place to edit copy.
+- Contact form validates but shows a "not sent" notice until a real delivery backend is added. Why: brief forbids fake success.

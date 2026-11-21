@@ -1,0 +1,149 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Instrument Serif", Georgia, serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-paper: var(--paper);
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.145 0.004 270);
+  --paper: oklch(0.185 0.005 270);
+  --foreground: oklch(0.96 0.004 85);
+  --card: oklch(0.21 0.005 270);
+  --card-foreground: oklch(0.96 0.004 85);
+  --popover: oklch(0.21 0.005 270);
+  --popover-foreground: oklch(0.96 0.004 85);
+  --primary: oklch(0.96 0.004 85);
+  --primary-foreground: oklch(0.145 0.004 270);
+  --secondary: oklch(0.24 0.005 270);
+  --secondary-foreground: oklch(0.96 0.004 85);
+  --muted: oklch(0.24 0.005 270);
+  --muted-foreground: oklch(0.68 0.008 270);
+  --accent: oklch(0.24 0.005 270);
+  --accent-foreground: oklch(0.96 0.004 85);
+  --destructive: oklch(0.68 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: oklch(0.65 0.2 258);
+  --ink: oklch(0.1 0.003 270);
+  --ink-foreground: oklch(0.96 0.004 85);
+  --ink-muted: oklch(0.66 0.008 270);
+  --brand: oklch(0.64 0.2 258);
+  --brand-soft: oklch(0.28 0.07 260);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.035em; }
+  ::selection { background: var(--brand); color: var(--ink-foreground); }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@utility container-x {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3.5rem);
+}
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-size: clamp(2.75rem, 8.2vw, 8.5rem);
+}
+
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-size: clamp(2.25rem, 5.5vw, 5.25rem);
+}
+
+@utility marquee {
+  animation: marquee 40s linear infinite;
+}
+
+@utility blueprint-grid {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center center;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes engine-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes forward-line {
+  0% { transform: scaleX(0); opacity: 0; }
+  25%, 75% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee { animation: none; }
+}
