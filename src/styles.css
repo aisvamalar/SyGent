@@ -82,13 +82,21 @@
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.035em; }
   ::selection { background: var(--brand); color: var(--ink-foreground); }
   
-  /* Hide scrollbar but keep scrolling */
-  html {
+  /* Hide scrollbar but keep scrolling functionality - applies to ALL elements */
+  * {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
   }
-  html::-webkit-scrollbar {
+  *::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
+  }
+  *::-webkit-scrollbar-track {
+    display: none;
+  }
+  *::-webkit-scrollbar-thumb {
+    display: none;
   }
 }
 
