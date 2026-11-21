@@ -29,7 +29,7 @@ try {
 
 // Get sender email with validation
 const SENDER_EMAIL = process.env.RESEND_SENDER_EMAIL || process.env.RESEND_FROM || "onboarding@resend.dev";
-const RECIPIENT_EMAIL = "vishwa.fury@gmail.com";
+const RECIPIENT_EMAIL = "Vishwapandiyan07@gmail.com";
 
 console.log("[Email] Configuration:", {
   senderEmail: SENDER_EMAIL,
