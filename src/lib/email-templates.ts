@@ -132,22 +132,35 @@ export function generateInternalNotificationEmail(
             </td>
           </tr>
 
-          <!-- Customer Database Section -->
+          <!-- Attachments Section -->
           <tr>
             <td style="padding: 0 40px 24px;">
               <h3 style="margin: 0 0 16px; color: #1a1a1a; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #1a1a1a; padding-bottom: 8px;">
-                Customer Database
+                Attachments
               </h3>
-              <p style="margin: 0 0 12px; color: #374151; font-size: 13px; line-height: 1.6;">
-                The latest master customer database is attached to this email for your reference.
-              </p>
-              <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 4px;">
+              
+              <!-- Enquiry Excel -->
+              <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 4px; margin-bottom: 12px;">
                 <p style="margin: 0; color: #6b7280; font-size: 12px; font-family: 'Courier New', monospace;">
-                  📎 Attachment: <strong style="color: #1a1a1a;">SYGENT_Customer_Database.xlsx</strong>
+                  📎 <strong style="color: #1a1a1a;">Enquiry_${data.enquiryId}_${data.name.replace(/[^a-zA-Z0-9_-]/g, "_")}.xlsx</strong>
+                </p>
+                <p style="margin: 4px 0 0; color: #9ca3af; font-size: 11px;">
+                  Detailed information for this specific enquiry
                 </p>
               </div>
+              
+              <!-- Customer Database Excel -->
+              <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 4px;">
+                <p style="margin: 0; color: #6b7280; font-size: 12px; font-family: 'Courier New', monospace;">
+                  📎 <strong style="color: #1a1a1a;">SYGENT_Customer_Database.xlsx</strong>
+                </p>
+                <p style="margin: 4px 0 0; color: #9ca3af; font-size: 11px;">
+                  Complete master customer database with all unique customers
+                </p>
+              </div>
+              
               <p style="margin: 12px 0 0; color: #6b7280; font-size: 12px; line-height: 1.5; font-style: italic;">
-                The Excel file contains the complete customer database, with one row per unique customer. New customers are added automatically, and existing customer records are updated without creating duplicate rows.
+                The customer database contains one row per unique customer email. New customers are added automatically, and existing customer records are updated without creating duplicate rows.
               </p>
             </td>
           </tr>

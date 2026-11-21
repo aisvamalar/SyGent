@@ -5,6 +5,7 @@ import {
 } from "../email-templates";
 import type { ContactFormInput } from "../schemas/contact-form.schema";
 import { generateCustomerDatabaseExcel } from "../customer-database-excel";
+import { generateEnquiryExcel } from "../excel";
 
 // Initialize Resend with error handling
 let resend: Resend | null = null;
@@ -120,37 +121,50 @@ export async function sendInternalNotification(
         enquiryCount: 0,
       });
 
-  // Generate complete customer database Excel attachment
-  let excelBuffer: Buffer | null = null;
-  const excelFilename = "SYGENT_Customer_Database.xlsx";
+  // Prepare attachments array
+  const attachments: Array<{
+    filename: string;
+    content: Buffer;
+    contentType: string;
+  }> = [];
 
+  // Generate per-enquiry Excel attachment
+  try {
+    console.log("[Email] 📊 Generating enquiry-specific Excel...");
+    const enquiryExcel = await generateEnquiryExcel(data);
+    attachments.push({
+      filename: enquiryExcel.filename,
+      content: enquiryExcel.buffer,
+      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    console.log("[Email] ✅ Enquiry Excel generated:", enquiryExcel.filename);
+  } catch (error) {
+    console.error("[Email] ⚠️ Failed to generate enquiry Excel:", error);
+  }
+
+  // Generate complete customer database Excel attachment
   try {
     console.log("[Email] 📊 Generating customer database Excel...");
-    excelBuffer = await generateCustomerDatabaseExcel();
-    console.log("[Email] ✅ Customer database Excel generated:", excelFilename);
+    const customerDbBuffer = await generateCustomerDatabaseExcel();
+    attachments.push({
+      filename: "SYGENT_Customer_Database.xlsx",
+      content: customerDbBuffer,
+      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    console.log("[Email] ✅ Customer database Excel generated");
   } catch (error) {
     console.error("[Email] ⚠️ Failed to generate customer database Excel:", error);
-    // Continue with email sending without attachment
   }
 
   return sendEmailWithRetry(async () => {
     console.log("[Email] Sending internal notification to:", RECIPIENT_EMAIL);
+    console.log("[Email] With", attachments.length, "attachment(s)");
     return await resend!.emails.send({
       from: SENDER_EMAIL,
       to: RECIPIENT_EMAIL,
       subject: `New Customer Enquiry – ${data.name} | SYGENT`,
       html,
-      attachments:
-        excelBuffer
-          ? [
-              {
-                filename: excelFilename,
-                content: excelBuffer,
-                contentType:
-                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-              },
-            ]
-          : [],
+      attachments,
     });
   });
 }
