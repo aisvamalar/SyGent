@@ -117,23 +117,16 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
         if (!internalResult.success) {
           console.error("Failed to send internal notification:", internalResult.error);
         } else {
-          console.log("✅ Internal notification sent successfully!");
+          console.log("✅ Internal notification sent to owner!");
         }
 
-        // Send customer acknowledgment (only if not using test email)
-        // Resend testing mode can only send to the account owner's email
-        const isTestMode = !process.env.RESEND_SENDER_EMAIL || process.env.RESEND_SENDER_EMAIL === "onboarding@resend.dev";
-        
-        if (!isTestMode) {
-          const customerResult = await sendCustomerAcknowledgment(data.email, data.name);
+        // Send customer acknowledgment email
+        const customerResult = await sendCustomerAcknowledgment(data.email, data.name);
 
-          if (!customerResult.success) {
-            console.error("Failed to send customer acknowledgment:", customerResult.error);
-          } else {
-            console.log("✅ Customer acknowledgment sent successfully!");
-          }
+        if (!customerResult.success) {
+          console.error("Failed to send customer acknowledgment:", customerResult.error);
         } else {
-          console.log("⚠️  Skipping customer email (Resend in test mode - verify a domain to enable)");
+          console.log("✅ Customer acknowledgment sent to:", data.email);
         }
       } catch (emailError) {
         // Log email errors but don't fail the submission
