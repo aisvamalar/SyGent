@@ -4,6 +4,7 @@ import {
   generateCustomerAcknowledgmentEmail,
 } from "../email-templates";
 import type { ContactFormInput } from "../schemas/contact-form.schema";
+import { generateEnquiryExcel } from "../excel";
 
 // Initialize Resend with error handling
 let resend: Resend | null = null;
@@ -22,7 +23,7 @@ try {
 // Default sender - update with your verified domain
 // During development, you can use "onboarding@resend.dev" for testing
 const SENDER_EMAIL = process.env.RESEND_SENDER_EMAIL || process.env.RESEND_FROM || "onboarding@resend.dev";
-const RECIPIENT_EMAIL = "vishwa.fury@gmail.com"; // Must match your Resend account email
+const RECIPIENT_EMAIL = "vishw.fury@gmail.com"; // Must match your Resend account email
 
 console.log("📧 Email config:", {
   senderEmail: SENDER_EMAIL,
@@ -93,12 +94,36 @@ export async function sendInternalNotification(data: EmailData): Promise<EmailRe
 
   const html = generateInternalNotificationEmail(data);
 
+  // Generate Excel attachment
+  let excelBuffer: Buffer | null = null;
+  let excelFilename: string | null = null;
+
+  try {
+    const excelResult = await generateEnquiryExcel(data);
+    excelBuffer = excelResult.buffer;
+    excelFilename = excelResult.filename;
+  } catch (error) {
+    console.error("Failed to generate Excel attachment:", error);
+    // Continue with email sending without attachment
+  }
+
   return sendEmailWithRetry(async () => {
     return await resend!.emails.send({
       from: SENDER_EMAIL,
       to: RECIPIENT_EMAIL,
-      subject: `New Website Enquiry – ${data.name}`,
+      subject: `🎉 New Project Enquiry – ${data.name}`,
       html,
+      attachments:
+        excelBuffer && excelFilename
+          ? [
+              {
+                filename: excelFilename,
+                content: excelBuffer,
+                contentType:
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              },
+            ]
+          : [],
     });
   });
 }

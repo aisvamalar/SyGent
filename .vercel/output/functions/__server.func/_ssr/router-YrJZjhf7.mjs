@@ -1,13 +1,13 @@
-import { i as __toESM } from "../_runtime.mjs";
+import { o as __toESM } from "../_runtime.mjs";
 import { _ as lazyRouteComponent, b as Link, f as Scripts, g as Outlet, h as createRouter, p as HeadContent, v as createFileRoute, x as useRouter, y as createRootRouteWithContext } from "../_libs/@tanstack/react-router+[...].mjs";
 import { r as require_react } from "../_libs/@hookform/resolvers+[...].mjs";
 import { s as require_jsx_runtime } from "../_libs/@radix-ui/react-accordion+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-B9cMi-oe.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-YrJZjhf7.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-DEd-4xVZ.css";
+var styles_default = "/assets/styles-BgPEY-VQ.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	console.error("Error caught by boundary:", {
@@ -177,7 +177,7 @@ function RootComponent() {
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})
 	});
 }
-var $$splitComponentImporter = () => import("./routes-VrkUZnmP.mjs");
+var $$splitComponentImporter = () => import("./routes-DGBysbo9.mjs");
 var title = "SyGent — AI & Digital Engineering Studio";
 var description = "SyGent builds intelligent AI solutions, AI agents, AR experiences, web & mobile apps and e-commerce platforms that move business forward.";
 var rootRouteChildren = { IndexRoute: createFileRoute("/")({

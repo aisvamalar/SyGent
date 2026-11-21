@@ -6,7 +6,7 @@ import { a as mergeHeaders, i as defaultSerovalDeserializerPlugins, n as getNorm
 import { a as TSS_SERVER_FUNCTION, c as createNullProtoObject, d as getStartContext, f as getStartOptions, i as TSS_FORMDATA_CONTEXT, m as safeObjectMerge, n as MAX_FRAME_PAYLOAD_SIZE, o as X_TSS_RAW_RESPONSE, p as runWithStartContext, r as TSS_CONTENT_TYPE_FRAMED_VERSIONED, s as X_TSS_SERIALIZED, t as MAX_FRAMED_STREAMS, u as flattenMiddlewares } from "./createServerFn-DDDJMFWM.mjs";
 import { r as require_react } from "../_libs/@hookform/resolvers+[...].mjs";
 import { s as require_jsx_runtime } from "../_libs/@radix-ui/react-accordion+[...].mjs";
-import { t as getServerFnById } from "../__23tanstack-start-server-fn-resolver-y8qB80_F.mjs";
+import { t as getServerFnById } from "../__23tanstack-start-server-fn-resolver-NJBVU6F7.mjs";
 import { t as createCsrfMiddleware } from "./createCsrfMiddleware-B2To0gPJ.mjs";
 import { AsyncLocalStorage } from "node:async_hooks";
 require_react();
@@ -100,7 +100,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-Cbw7U8nf.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BmtmWga0.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -1186,7 +1186,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-B9cMi-oe.mjs"),
+		import("./router-YrJZjhf7.mjs"),
 		import("./start-RKGGYzjZ.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

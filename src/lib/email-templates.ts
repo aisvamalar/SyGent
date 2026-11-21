@@ -45,77 +45,82 @@ export function generateInternalNotificationEmail(data: EnquiryData): string {
             </td>
           </tr>
 
-          <!-- Alert Badge -->
+          <!-- Greeting -->
           <tr>
-            <td style="padding: 32px 40px 0;">
-              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 16px; text-align: center;">
-                <h2 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">
-                  🔔 NEW PROJECT ENQUIRY
-                </h2>
-              </div>
+            <td style="padding: 32px 40px 16px;">
+              <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600; line-height: 1.6;">
+                Hey Team! 👋
+              </p>
             </td>
           </tr>
 
-          <!-- Client Information -->
+          <!-- Intro -->
           <tr>
-            <td style="padding: 32px 40px 0;">
+            <td style="padding: 0 40px 24px;">
+              <p style="margin: 0; color: #e5e7eb; font-size: 15px; line-height: 1.6;">
+                We've received a new project enquiry through our website. Here are the details!
+              </p>
+            </td>
+          </tr>
+
+          <!-- CUSTOMER INFORMATION -->
+          <tr>
+            <td style="padding: 0 40px 24px;">
               <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 24px;">
-                <h3 style="margin: 0 0 20px; color: #667eea; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #667eea; padding-bottom: 12px;">
-                  Client Information
+                <h3 style="margin: 0 0 20px; color: #667eea; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #667eea; padding-bottom: 12px;">
+                  Customer Information
                 </h3>
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600; width: 140px;">Full Name:</td>
-                    <td style="padding: 10px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.name}</td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600; width: 160px;">Full Name:</td>
+                    <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.name}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Email:</td>
-                    <td style="padding: 10px 0;"><a href="mailto:${data.email}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.email}</a></td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Email Address:</td>
+                    <td style="padding: 8px 0;"><a href="mailto:${data.email}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.email}</a></td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Company:</td>
-                    <td style="padding: 10px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.company}</td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Company Name:</td>
+                    <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.company || "N/A"}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Phone:</td>
-                    <td style="padding: 10px 0;"><a href="tel:${data.phone}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.phone}</a></td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Phone Number:</td>
+                    <td style="padding: 8px 0;"><a href="tel:${data.phone}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.phone}</a></td>
                   </tr>
-                  ${
-                    data.website
-                      ? `<tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Website:</td>
-                    <td style="padding: 10px 0;"><a href="${data.website.startsWith("http") ? data.website : `https://${data.website}`}" target="_blank" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.website}</a></td>
-                  </tr>`
-                      : ""
-                  }
+                  <tr>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Website:</td>
+                    <td style="padding: 8px 0;">
+                      ${
+                        data.website
+                          ? `<a href="${data.website.startsWith("http") ? data.website : `https://${data.website}`}" target="_blank" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.website}</a>`
+                          : `<span style="color: #ffffff; font-size: 14px; font-weight: 500;">N/A</span>`
+                      }
+                    </td>
+                  </tr>
                 </table>
               </div>
             </td>
           </tr>
 
-          <!-- Project Details -->
+          <!-- PROJECT INFORMATION -->
           <tr>
-            <td style="padding: 24px 40px 0;">
+            <td style="padding: 0 40px 24px;">
               <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 24px;">
-                <h3 style="margin: 0 0 20px; color: #667eea; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #667eea; padding-bottom: 12px;">
-                  Project Details
+                <h3 style="margin: 0 0 20px; color: #667eea; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #667eea; padding-bottom: 12px;">
+                  Project Information
                 </h3>
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600; width: 140px;">Service:</td>
-                    <td style="padding: 10px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.service}</td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600; width: 160px;">Requested Service:</td>
+                    <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.service}</td>
                   </tr>
-                  ${
-                    data.budget
-                      ? `<tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Budget:</td>
-                    <td style="padding: 10px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.budget}</td>
-                  </tr>`
-                      : ""
-                  }
+                  <tr>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Estimated Budget:</td>
+                    <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${data.budget || "N/A"}</td>
+                  </tr>
                 </table>
                 <div style="margin-top: 16px;">
-                  <p style="margin: 0 0 8px; color: #9ca3af; font-size: 13px; font-weight: 600;">Description:</p>
+                  <p style="margin: 0 0 8px; color: #9ca3af; font-size: 13px; font-weight: 600;">Project Description:</p>
                   <div style="background: #0f0f0f; border-left: 4px solid #667eea; padding: 16px; border-radius: 4px; color: #e5e7eb; font-size: 14px; line-height: 1.7;">
                     ${data.description.replace(/\n/g, "<br>")}
                   </div>
@@ -124,33 +129,44 @@ export function generateInternalNotificationEmail(data: EnquiryData): string {
             </td>
           </tr>
 
-          <!-- Submission Metadata -->
+          <!-- ENQUIRY TRACKING -->
           <tr>
-            <td style="padding: 24px 40px 40px;">
+            <td style="padding: 0 40px 32px;">
               <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 24px;">
-                <h3 style="margin: 0 0 20px; color: #667eea; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #667eea; padding-bottom: 12px;">
-                  Submission Details
+                <h3 style="margin: 0 0 20px; color: #667eea; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #667eea; padding-bottom: 12px;">
+                  Enquiry Tracking
                 </h3>
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600; width: 140px;">Date:</td>
-                    <td style="padding: 10px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${formattedDate}</td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600; width: 160px;">Unique Enquiry ID:</td>
+                    <td style="padding: 8px 0; color: #667eea; font-size: 13px; font-family: 'Courier New', monospace; font-weight: 500;">${data.enquiryId}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Time:</td>
-                    <td style="padding: 10px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${formattedTime}</td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Submission Date:</td>
+                    <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${formattedDate}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Enquiry ID:</td>
-                    <td style="padding: 10px 0; color: #667eea; font-size: 13px; font-family: 'Courier New', monospace; font-weight: 500;">${data.enquiryId}</td>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Submission Time:</td>
+                    <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 500;">${formattedTime}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Status:</td>
-                    <td style="padding: 10px 0;">
-                      <span style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">NEW</span>
+                    <td style="padding: 8px 0; color: #9ca3af; font-size: 13px; font-weight: 600;">Current Status:</td>
+                    <td style="padding: 8px 0;">
+                      <span style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">New</span>
                     </td>
                   </tr>
                 </table>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Closing Message -->
+          <tr>
+            <td style="padding: 0 40px 40px;">
+              <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px; padding: 20px; text-align: center;">
+                <p style="margin: 0; color: #e5e7eb; font-size: 15px; line-height: 1.6;">
+                  Please review the enquiry and get in touch with the customer. This could be an exciting new collaboration! 🚀
+                </p>
               </div>
             </td>
           </tr>

@@ -1,7 +1,7 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/__23tanstack-start-server-fn-resolver-y8qB80_F.js
+//#region node_modules/.nitro/vite/services/ssr/assets/__23tanstack-start-server-fn-resolver-NJBVU6F7.js
 var manifest = { "82d837babb1b42fb2153f7d8d449e1a15ef05107fd75fa8c3f03e3eddd02587d": {
 	functionName: "submitContactForm$_createServerFn_handler",
-	importer: () => import("./_ssr/contact-form-CuyAHerw.mjs")
+	importer: () => import("./_ssr/contact-form-CXK6WX1a.mjs")
 } };
 async function getServerFnById(id, access) {
 	const serverFnInfo = manifest[id];
