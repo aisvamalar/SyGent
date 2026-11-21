@@ -66,16 +66,24 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
     return result.data;
   })
   .handler(async ({ data, context }): Promise<SubmissionResult> => {
+    console.log("📝 Contact form submission started");
+    
     try {
       // Rate limiting check (safely handle missing request context)
       const request = (context as any)?.request;
       const clientIP = getClientIP(request);
+      
+      console.log("🔍 Client IP:", clientIP);
+      
       if (isRateLimited(clientIP)) {
+        console.log("⛔ Rate limit exceeded for IP:", clientIP);
         return {
           success: false,
           error: "Too many submissions. Please try again later.",
         };
       }
+
+      console.log("💾 Attempting to save to Supabase...");
 
       // Insert into Supabase
       const { data: submission, error: dbError } = await supabase
@@ -95,7 +103,7 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
         .single();
 
       if (dbError || !submission) {
-        console.error("Database insertion failed:", dbError);
+        console.error("❌ Database insertion failed:", dbError);
         return {
           success: false,
           error: "Failed to save your enquiry. Please try again.",
@@ -105,8 +113,12 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
       const enquiryId = submission.id;
       const submittedAt = submission.created_at;
 
+      console.log("✅ Submission saved to database:", enquiryId);
+
       // Send emails (don't fail the submission if emails fail)
       try {
+        console.log("📧 Sending internal notification...");
+        
         // Send internal notification to owner
         const internalResult = await sendInternalNotification({
           ...data,
@@ -115,31 +127,34 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
         });
 
         if (!internalResult.success) {
-          console.error("Failed to send internal notification:", internalResult.error);
+          console.error("❌ Failed to send internal notification:", internalResult.error);
         } else {
           console.log("✅ Internal notification sent to owner!");
         }
+
+        console.log("📧 Sending customer acknowledgment...");
 
         // Send customer acknowledgment email
         const customerResult = await sendCustomerAcknowledgment(data.email, data.name);
 
         if (!customerResult.success) {
-          console.error("Failed to send customer acknowledgment:", customerResult.error);
+          console.error("❌ Failed to send customer acknowledgment:", customerResult.error);
         } else {
           console.log("✅ Customer acknowledgment sent to:", data.email);
         }
       } catch (emailError) {
         // Log email errors but don't fail the submission
-        console.error("Email sending error:", emailError);
+        console.error("❌ Email sending error:", emailError);
       }
 
       // Return success - the enquiry is saved even if emails failed
+      console.log("✅ Form submission completed successfully");
       return {
         success: true,
         enquiryId,
       };
     } catch (error) {
-      console.error("Contact form submission error:", error);
+      console.error("❌ Contact form submission error:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "An unexpected error occurred",
