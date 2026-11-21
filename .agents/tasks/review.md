@@ -38,8 +38,6 @@ The filename sanitizes the customer name by replacing any non-alphanumeric chara
 
 `sendInternalNotification` calls `generateEnquiryExcel` inside a try/catch block. On success, the buffer and filename are assigned to local variables; on failure, both remain `null` and a console error is logged. The Resend `attachments` array is conditionally populated: if both buffer and filename exist, an attachment object is added with `content: buffer`, `contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"`, and `filename: excelFilename`. Otherwise, an empty array is passed.
 
-Resend accepts this format and delivers the attachment with the correct MIME type and filename. The buffer is constructed via `Buffer.from(await workbook.xlsx.writeBuffer())`, which is compatible with Resend's expected Base64 encoding (Resend handles the encoding internally when passed a Buffer).
-
 ## Silent failure on Excel generation error
 
 When `generateEnquiryExcel` throws (e.g., ExcelJS internal error, memory exhaustion, or invalid data), the error is logged to console and the email proceeds without an attachment. The owner receives the notification email but has no indication that an Excel file was intended or that generation failed. This matches the brief's requirement to "handle email failures without losing database submissions," but applies the resilience to the attachment step rather than the email step.
@@ -54,17 +52,13 @@ The brief specifies "test email delivery failures," but this failure mode (attac
 - **PROJECT INFORMATION**: Requested Service, Estimated Budget, Project Description
 - **ENQUIRY TRACKING**: Unique Enquiry ID, Submission Date, Submission Time, Current Status
 
-The closing reads "Please review the enquiry and get in touch with the customer. This could be an exciting new collaboration! 🚀" The subject line is `🎉 New Project Enquiry – ${data.name}`, matching the brief's specified format.
+The closing reads "Please review the enquiry and get in touch with the customer. This could be an exciting new collaboration! 🚀" The subject line is `🎉 New Project Enquiry – ${data.name}`.
 
-The template handles optional fields (company, website, budget) by rendering "N/A" when the value is missing or null. This matches the Excel sheet's fallback pattern and the brief's requirement to "handle optional fields gracefully."
+The template handles optional fields (company, website, budget) by rendering "N/A" when the value is missing or null.
 
 ## Recipient email correction
 
-The prior implementation sent to `vishwa.fury@gmail.com` (note the extra "a"). The `RECIPIENT_EMAIL` constant now reads `vishw.fury@gmail.com`, matching the email specified in the brief. The verification note confirms this correction.
-
-## Isolation from customer acknowledgment flow
-
-`generateCustomerAcknowledgmentEmail` remains unchanged. It continues to generate a separate HTML email with a different subject line, no attachment, and no reference to the Excel feature. The two email flows are independent and called separately from `contact-form.ts`.
+The prior implementation sent to `vishwa.fury@gmail.com` (note the extra "a"). The `RECIPIENT_EMAIL` constant now reads `vishw.fury@gmail.com`.
 
 </details>
 

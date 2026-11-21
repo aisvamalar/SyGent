@@ -8,27 +8,33 @@ import { generateEnquiryExcel } from "../excel";
 
 // Initialize Resend with error handling
 let resend: Resend | null = null;
+let resendError: string | null = null;
+
 try {
   const apiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY;
+  console.log("[Email] Checking RESEND_API_KEY...");
+  
   if (!apiKey) {
-    console.error("❌ RESEND_API_KEY is not set!");
+    resendError = "RESEND_API_KEY environment variable is not set in Vercel";
+    console.error(`[Email] ❌ ${resendError}`);
   } else {
     resend = new Resend(apiKey);
-    console.log("✅ Resend initialized successfully");
+    console.log("[Email] ✅ Resend initialized successfully with key:", apiKey.substring(0, 10) + "...");
   }
 } catch (error) {
-  console.error("❌ Failed to initialize Resend:", error);
+  resendError = `Failed to initialize Resend: ${error instanceof Error ? error.message : String(error)}`;
+  console.error("[Email] ❌", resendError);
 }
 
-// Default sender - update with your verified domain
-// During development, you can use "onboarding@resend.dev" for testing
+// Get sender email with validation
 const SENDER_EMAIL = process.env.RESEND_SENDER_EMAIL || process.env.RESEND_FROM || "onboarding@resend.dev";
-const RECIPIENT_EMAIL = "vishw.fury@gmail.com"; // Must match your Resend account email
+const RECIPIENT_EMAIL = "vishwa.fury@gmail.com";
 
-console.log("📧 Email config:", {
+console.log("[Email] Configuration:", {
   senderEmail: SENDER_EMAIL,
   recipientEmail: RECIPIENT_EMAIL,
   resendConfigured: !!resend,
+  usesVerifiedDomain: SENDER_EMAIL !== "onboarding@resend.dev",
 });
 
 interface EmailData extends ContactFormInput {
@@ -88,8 +94,12 @@ async function sendEmailWithRetry(
 }
 
 export async function sendInternalNotification(data: EmailData): Promise<EmailResult> {
+  console.log("[Email] sendInternalNotification called");
+  
   if (!resend) {
-    return { success: false, error: "Email service not available" };
+    const error = resendError || "Email service not configured - check RESEND_API_KEY";
+    console.error("[Email] ❌", error);
+    return { success: false, error };
   }
 
   const html = generateInternalNotificationEmail(data);
@@ -102,12 +112,14 @@ export async function sendInternalNotification(data: EmailData): Promise<EmailRe
     const excelResult = await generateEnquiryExcel(data);
     excelBuffer = excelResult.buffer;
     excelFilename = excelResult.filename;
+    console.log("[Email] ✅ Excel attachment generated:", excelFilename);
   } catch (error) {
-    console.error("Failed to generate Excel attachment:", error);
+    console.error("[Email] ⚠️ Failed to generate Excel attachment:", error);
     // Continue with email sending without attachment
   }
 
   return sendEmailWithRetry(async () => {
+    console.log("[Email] Sending internal notification to:", RECIPIENT_EMAIL);
     return await resend!.emails.send({
       from: SENDER_EMAIL,
       to: RECIPIENT_EMAIL,
@@ -132,13 +144,18 @@ export async function sendCustomerAcknowledgment(
   email: string,
   name: string
 ): Promise<EmailResult> {
+  console.log("[Email] sendCustomerAcknowledgment called for:", email);
+  
   if (!resend) {
-    return { success: false, error: "Email service not available" };
+    const error = resendError || "Email service not configured - check RESEND_API_KEY";
+    console.error("[Email] ❌", error);
+    return { success: false, error };
   }
 
   const html = generateCustomerAcknowledgmentEmail({ name });
 
   return sendEmailWithRetry(async () => {
+    console.log("[Email] Sending customer acknowledgment to:", email);
     return await resend!.emails.send({
       from: SENDER_EMAIL,
       to: email,

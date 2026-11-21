@@ -61,29 +61,33 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     const result = contactFormSchema.safeParse(data);
     if (!result.success) {
-      throw new Error(result.error.errors[0]?.message || "Invalid form data");
+      const errorMsg = result.error.errors[0]?.message || "Invalid form data";
+      console.error("[ContactForm] ❌ Validation failed:", errorMsg);
+      throw new Error(errorMsg);
     }
+    console.log("[ContactForm] ✅ Validation passed");
     return result.data;
   })
   .handler(async ({ data, context }): Promise<SubmissionResult> => {
-    console.log("📝 Contact form submission started");
+    console.log("[ContactForm] ========== NEW SUBMISSION ==========");
+    console.log("[ContactForm] Data:", { name: data.name, email: data.email, company: data.company });
     
     try {
       // Rate limiting check (safely handle missing request context)
       const request = (context as any)?.request;
       const clientIP = getClientIP(request);
       
-      console.log("🔍 Client IP:", clientIP);
+      console.log("[ContactForm] Client IP:", clientIP);
       
       if (isRateLimited(clientIP)) {
-        console.log("⛔ Rate limit exceeded for IP:", clientIP);
+        console.log("[ContactForm] ⛔ Rate limit exceeded for IP:", clientIP);
         return {
           success: false,
           error: "Too many submissions. Please try again later.",
         };
       }
 
-      console.log("💾 Attempting to save to Supabase...");
+      console.log("[ContactForm] 💾 Attempting to save to Supabase...");
 
       // Insert into Supabase
       const { data: submission, error: dbError } = await supabase
@@ -97,29 +101,33 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
           service: data.service,
           description: data.description,
           budget: data.budget || null,
-          status: "new", // Always set to 'new' on the server
+          status: "new",
         })
         .select("id, created_at")
         .single();
 
       if (dbError || !submission) {
-        console.error("❌ Database insertion failed:", dbError);
+        console.error("[ContactForm] ❌ Database error:", {
+          message: dbError?.message,
+          details: dbError?.details,
+          hint: dbError?.hint,
+          code: dbError?.code,
+        });
         return {
           success: false,
-          error: "Failed to save your enquiry. Please try again.",
+          error: `Database error: ${dbError?.message || "Failed to save enquiry"}. Check Supabase credentials.`,
         };
       }
 
       const enquiryId = submission.id;
       const submittedAt = submission.created_at;
 
-      console.log("✅ Submission saved to database:", enquiryId);
+      console.log("[ContactForm] ✅ Saved to database. ID:", enquiryId);
 
       // Send emails (don't fail the submission if emails fail)
       try {
-        console.log("📧 Sending internal notification...");
+        console.log("[ContactForm] 📧 Sending internal notification...");
         
-        // Send internal notification to owner
         const internalResult = await sendInternalNotification({
           ...data,
           enquiryId,
@@ -127,37 +135,37 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
         });
 
         if (!internalResult.success) {
-          console.error("❌ Failed to send internal notification:", internalResult.error);
+          console.error("[ContactForm] ⚠️ Internal email failed:", internalResult.error);
         } else {
-          console.log("✅ Internal notification sent to owner!");
+          console.log("[ContactForm] ✅ Internal notification sent! Email ID:", internalResult.emailId);
         }
 
-        console.log("📧 Sending customer acknowledgment...");
+        console.log("[ContactForm] 📧 Sending customer acknowledgment...");
 
-        // Send customer acknowledgment email
         const customerResult = await sendCustomerAcknowledgment(data.email, data.name);
 
         if (!customerResult.success) {
-          console.error("❌ Failed to send customer acknowledgment:", customerResult.error);
+          console.error("[ContactForm] ⚠️ Customer email failed:", customerResult.error);
         } else {
-          console.log("✅ Customer acknowledgment sent to:", data.email);
+          console.log("[ContactForm] ✅ Customer acknowledgment sent! Email ID:", customerResult.emailId);
         }
       } catch (emailError) {
-        // Log email errors but don't fail the submission
-        console.error("❌ Email sending error:", emailError);
+        console.error("[ContactForm] ❌ Email error:", emailError instanceof Error ? emailError.message : String(emailError));
       }
 
-      // Return success - the enquiry is saved even if emails failed
-      console.log("✅ Form submission completed successfully");
+      console.log("[ContactForm] ========== SUBMISSION COMPLETE ==========");
       return {
         success: true,
         enquiryId,
       };
     } catch (error) {
-      console.error("❌ Contact form submission error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error("[ContactForm] ❌ FATAL ERROR:", errorMessage);
+      console.error("[ContactForm] Stack trace:", error instanceof Error ? error.stack : "No stack trace");
+      
       return {
         success: false,
-        error: error instanceof Error ? error.message : "An unexpected error occurred",
+        error: `Submission failed: ${errorMessage}`,
       };
     }
   });
