@@ -4,7 +4,7 @@ import {
   generateCustomerAcknowledgmentEmail,
 } from "../email-templates";
 import type { ContactFormInput } from "../schemas/contact-form.schema";
-import { generateEnquiryExcel } from "../excel";
+import { generateCustomerDatabaseExcel } from "../customer-database-excel";
 
 // Initialize Resend with error handling
 let resend: Resend | null = null;
@@ -40,6 +40,12 @@ console.log("[Email] Configuration:", {
 interface EmailData extends ContactFormInput {
   enquiryId: string;
   submittedAt: string;
+}
+
+interface CustomerData {
+  customerId: string;
+  isNewCustomer: boolean;
+  enquiryCount: number;
 }
 
 interface EmailResult {
@@ -93,7 +99,10 @@ async function sendEmailWithRetry(
   };
 }
 
-export async function sendInternalNotification(data: EmailData): Promise<EmailResult> {
+export async function sendInternalNotification(
+  data: EmailData,
+  customerData: CustomerData | null
+): Promise<EmailResult> {
   console.log("[Email] sendInternalNotification called");
   
   if (!resend) {
@@ -102,19 +111,25 @@ export async function sendInternalNotification(data: EmailData): Promise<EmailRe
     return { success: false, error };
   }
 
-  const html = generateInternalNotificationEmail(data);
+  // Generate HTML with customer data if available
+  const html = customerData
+    ? generateInternalNotificationEmail(data, customerData)
+    : generateInternalNotificationEmail(data, {
+        customerId: "N/A",
+        isNewCustomer: false,
+        enquiryCount: 0,
+      });
 
-  // Generate Excel attachment
+  // Generate complete customer database Excel attachment
   let excelBuffer: Buffer | null = null;
-  let excelFilename: string | null = null;
+  const excelFilename = "SYGENT_Customer_Database.xlsx";
 
   try {
-    const excelResult = await generateEnquiryExcel(data);
-    excelBuffer = excelResult.buffer;
-    excelFilename = excelResult.filename;
-    console.log("[Email] ✅ Excel attachment generated:", excelFilename);
+    console.log("[Email] 📊 Generating customer database Excel...");
+    excelBuffer = await generateCustomerDatabaseExcel();
+    console.log("[Email] ✅ Customer database Excel generated:", excelFilename);
   } catch (error) {
-    console.error("[Email] ⚠️ Failed to generate Excel attachment:", error);
+    console.error("[Email] ⚠️ Failed to generate customer database Excel:", error);
     // Continue with email sending without attachment
   }
 
@@ -123,10 +138,10 @@ export async function sendInternalNotification(data: EmailData): Promise<EmailRe
     return await resend!.emails.send({
       from: SENDER_EMAIL,
       to: RECIPIENT_EMAIL,
-      subject: `🎉 New Project Enquiry – ${data.name}`,
+      subject: `New Customer Enquiry – ${data.name} | SYGENT`,
       html,
       attachments:
-        excelBuffer && excelFilename
+        excelBuffer
           ? [
               {
                 filename: excelFilename,
@@ -159,7 +174,7 @@ export async function sendCustomerAcknowledgment(
     return await resend!.emails.send({
       from: SENDER_EMAIL,
       to: email,
-      subject: "We received your project enquiry!",
+      subject: "Thanks for reaching out to SYGENT!",
       html,
     });
   });

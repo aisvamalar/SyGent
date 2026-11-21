@@ -124,15 +124,53 @@ export const submitContactForm$ = createServerFn({ method: "POST" })
 
       console.log("[ContactForm] ✅ Saved to database. ID:", enquiryId);
 
+      // Upsert customer record (add new or update existing)
+      let customerData = null;
+      try {
+        console.log("[ContactForm] 👤 Upserting customer record for:", data.email);
+
+        const { data: customerResult, error: customerError } = await supabase.rpc(
+          "upsert_customer",
+          {
+            p_name: data.name,
+            p_email: data.email,
+            p_phone: data.phone,
+            p_company: data.company || null,
+          }
+        );
+
+        if (customerError) {
+          console.error("[ContactForm] ⚠️ Customer upsert failed:", customerError);
+        } else {
+          customerData = customerResult;
+          console.log("[ContactForm] ✅ Customer upserted:", {
+            customerId: customerData.customer_id,
+            isNew: customerData.is_new_customer,
+            enquiryCount: customerData.enquiry_count,
+          });
+        }
+      } catch (customerUpsertError) {
+        console.error("[ContactForm] ❌ Customer upsert error:", customerUpsertError);
+      }
+
       // Send emails (don't fail the submission if emails fail)
       try {
         console.log("[ContactForm] 📧 Sending internal notification...");
         
-        const internalResult = await sendInternalNotification({
-          ...data,
-          enquiryId,
-          submittedAt,
-        });
+        const internalResult = await sendInternalNotification(
+          {
+            ...data,
+            enquiryId,
+            submittedAt,
+          },
+          customerData
+            ? {
+                customerId: customerData.customer_id,
+                isNewCustomer: customerData.is_new_customer,
+                enquiryCount: customerData.enquiry_count,
+              }
+            : null
+        );
 
         if (!internalResult.success) {
           console.error("[ContactForm] ⚠️ Internal email failed:", internalResult.error);
