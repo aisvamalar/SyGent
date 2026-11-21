@@ -47,8 +47,8 @@ export function generateInternalNotificationEmail(
           
           <!-- Header with Logo -->
           <tr>
-            <td style="padding: 32px 40px 24px; border-bottom: 2px solid #1a1a1a;">
-              <h1 style="margin: 0 0 8px; color: #1a1a1a; font-size: 28px; font-weight: 800; letter-spacing: 2px;">SYGENT</h1>
+            <td style="padding: 32px 40px 24px; border-bottom: 2px solid #1a1a1a; text-align: center;">
+              <img src="https://sygent.in/logo.png" alt="SYGENT Logo" style="max-width: 180px; height: auto; margin: 0 auto 16px;" />
               <p style="margin: 0 0 12px; color: #6b7280; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">Building What's Next</p>
               <p style="margin: 0; color: #9ca3af; font-size: 12px;">
                 Website: <a href="https://sygent.in" style="color: #1a1a1a; text-decoration: none;">https://sygent.in</a>
@@ -234,7 +234,7 @@ export function generateCustomerAcknowledgmentEmail(data: Pick<EnquiryData, "nam
           <!-- Header with Logo -->
           <tr>
             <td style="padding: 40px 40px 20px; text-align: center; border-bottom: 2px solid #1a1a1a;">
-              <h1 style="margin: 0 0 8px; color: #1a1a1a; font-size: 32px; font-weight: 800; letter-spacing: 2px;">SYGENT</h1>
+              <img src="https://sygent.in/logo.png" alt="SYGENT Logo" style="max-width: 200px; height: auto; margin: 0 auto 12px;" />
               <p style="margin: 0; color: #6b7280; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">Building What's Next</p>
             </td>
           </tr>
